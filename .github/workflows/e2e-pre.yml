@@ -1,0 +1,45 @@
+name: E2E contra PRE (tras deploy en Vercel)
+
+# Igual que e2e-prod.yml, pero para el Preview de Vercel de la rama "pre"
+# (Vercel despliega como "Preview" cualquier rama que no sea la de
+# producción, así que hay que filtrar también por la rama exacta o
+# correría en el preview de cualquier PR).
+on:
+  deployment_status:
+  workflow_dispatch:
+
+jobs:
+  e2e-pre:
+    if: >
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.deployment_status.state == 'success' &&
+       github.event.deployment.environment == 'Preview' &&
+       github.event.deployment.ref == 'pre')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: pre
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      - name: Instalar navegadores de Playwright
+        run: npx playwright install --with-deps chromium
+
+      - name: Ejecutar tests E2E contra PRE
+        run: npm run test:e2e:pre
+
+      - name: Subir informe de Playwright si algo falla
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-pre
+          path: playwright-report/
+          retention-days: 7
