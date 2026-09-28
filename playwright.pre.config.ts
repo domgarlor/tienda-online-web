@@ -1,12 +1,6 @@
 import { defineConfig, devices } from '@playwright/test';
 
 // Config para correr los mismos tests E2E contra el entorno de PRE.
-//
-// IMPORTANTE: los valores por defecto de PRE_URL/PRE_API_URL son placeholders
-// (Render y Vercel asignan sufijos aleatorios a la URL final si el nombre
-// exacto no está libre, igual que pasó con producción). En cuanto tengas las
-// URLs reales, o pásalas por variable de entorno al ejecutar los tests, o
-// actualiza los valores por defecto aquí y en e2e/wake-up-backend-pre.ts.
 const PRE_URL = process.env.PRE_URL ?? 'https://tienda-online-web-git-pre-nos18.vercel.app';
 
 export default defineConfig({
@@ -15,6 +9,11 @@ export default defineConfig({
   workers: 1,
   reporter: process.env.CI ? [['list'], ['html', { outputFolder: 'playwright-report', open: 'never' }]] : 'list',
   timeout: 60_000,
+  // El wake-up solo confirma que /api/productos responde; la primera petición
+  // "de verdad" (login, con BCrypt + JPA) puede seguir siendo lenta justo
+  // después de despertar. Timeout de aserciones más largo que el default
+  // (5s) para no depender de la suerte del timing tras un cold start.
+  expect: { timeout: 15_000 },
   globalSetup: './e2e/wake-up-backend-pre.ts',
   use: {
     baseURL: PRE_URL,
