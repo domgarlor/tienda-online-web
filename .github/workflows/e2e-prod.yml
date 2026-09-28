@@ -1,0 +1,42 @@
+name: E2E contra producción (tras deploy en Vercel)
+
+# "deployment_status" es el evento que Vercel publica en GitHub cuando su
+# propio despliegue termina de verdad (no al hacer push, que solo dispara
+# el build). Se dispara tanto para Production como para Previews de PRs;
+# filtramos abajo para que solo corra en el despliegue de Production.
+on:
+  deployment_status:
+  workflow_dispatch:
+
+jobs:
+  e2e-prod:
+    if: >
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.deployment_status.state == 'success' &&
+       github.event.deployment.environment == 'Production')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      - name: Instalar navegadores de Playwright
+        run: npx playwright install --with-deps chromium
+
+      - name: Ejecutar tests E2E contra producción
+        run: npm run test:e2e:prod
+
+      - name: Subir informe de Playwright si algo falla
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 7

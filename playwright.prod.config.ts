@@ -9,7 +9,7 @@ export default defineConfig({
   testDir: './e2e',
   fullyParallel: false,
   workers: 1,
-  reporter: 'list',
+  reporter: process.env.CI ? [['list'], ['html', { outputFolder: 'playwright-report', open: 'never' }]] : 'list',
   timeout: 60_000, // margen extra por si el backend gratuito de Render está despertando
   globalSetup: './e2e/wake-up-backend.ts',
   use: {
