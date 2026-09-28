@@ -8,6 +8,11 @@ export default defineConfig({
   use: {
     baseURL: 'http://localhost:5173',
     trace: 'retain-on-failure',
+    // Ralentiza cada acción del navegador (ms). Global, sin tocar los tests:
+    // PW_SLOWMO=400 npm run test:e2e -- --headed
+    launchOptions: {
+      slowMo: process.env.PW_SLOWMO ? Number(process.env.PW_SLOWMO) : undefined,
+    },
   },
   projects: [
     {
