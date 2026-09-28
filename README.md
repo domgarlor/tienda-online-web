@@ -43,7 +43,25 @@ Los tests cubren:
 - Añadir al carrito y completar un pedido (y que sin sesión no se pueda pagar).
 - Cierre de sesión y protección de rutas privadas (`/mis-pedidos`).
 
-Son repetibles sin reiniciar el backend entre ejecuciones: los datos de prueba usan usuario/email únicos por ejecución (`e2e/helpers.ts`) para no chocar con restricciones de unicidad, la misma lección aprendida con la colección de Postman del backend.
+Son repetibles sin reiniciar el backend entre ejecuciones: los datos de prueba usan usuario/email únicos por ejecución (`e2e/helpers.ts`) para no chocar con restricciones de unicidad, la misma lección aprendida con la colección de Postman del backend. El test de pedido tampoco usa las cuentas semilla (`ana`/`luis`): registra un cliente desechable en cada ejecución, para poder correr los tests contra producción sin ir acumulando pedidos de prueba en cuentas de demo reales.
+
+### Contra el entorno público (producción)
+
+Los mismos tests, sin tocar nada, apuntando a la URL real desplegada en Vercel/Render en vez de a `localhost`:
+
+```bash
+npm run test:e2e:prod
+```
+
+Usa `playwright.prod.config.ts` — no arranca nada local. Antes de los tests, un `globalSetup` (`e2e/wake-up-backend.ts`) "despierta" el backend de Render por si llevaba dormido (el plan gratis duerme a los 15 min sin tráfico; despertar puede tardar hasta ~60s).
+
+Para apuntar a otra URL (por ejemplo, un fork con tu propio despliegue):
+
+```bash
+PROD_URL=https://tu-frontend.vercel.app PROD_API_URL=https://tu-backend.onrender.com npm run test:e2e:prod
+```
+
+Ten en cuenta que esto crea datos reales en la base de datos de producción (usuarios y pedidos de prueba, aunque desechables) — no lo lances en bucle sin más: cada ejecución también consume una unidad de stock real de "Ratón inalámbrico".
 
 ## Estructura
 

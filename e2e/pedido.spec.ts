@@ -1,10 +1,16 @@
 import { test, expect } from '@playwright/test';
+import { usuarioUnico } from './helpers';
 
 test('un cliente logueado puede añadir al carrito y completar un pedido', async ({ page }) => {
-  await page.goto('/login');
-  await page.getByTestId('login-username').fill('luis');
-  await page.getByTestId('login-password').fill('luis123');
-  await page.getByTestId('login-submit').click();
+  // Usuario desechable en vez de la cuenta semilla "luis": así el test se puede
+  // repetir contra producción sin ir acumulando pedidos en una cuenta de demo real.
+  const usuario = usuarioUnico();
+  await page.goto('/registro');
+  await page.getByTestId('registro-nombre').fill(usuario.nombre);
+  await page.getByTestId('registro-email').fill(usuario.email);
+  await page.getByTestId('registro-username').fill(usuario.username);
+  await page.getByTestId('registro-password').fill(usuario.password);
+  await page.getByTestId('registro-submit').click();
   await expect(page).toHaveURL('/');
 
   const tarjetaRaton = page.getByTestId('producto-card').filter({ hasText: 'Ratón inalámbrico' });
