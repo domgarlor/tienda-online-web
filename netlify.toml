@@ -1,0 +1,10 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+# Sin esto, refrescar en /carrito o /mis-pedidos daría 404: todas las rutas
+# las resuelve el router de React en el navegador, no el servidor estático.
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

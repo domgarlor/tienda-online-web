@@ -2,6 +2,8 @@
 
 Frontend web de [tienda-online](https://github.com/domgarlor/tienda-online): catálogo, carrito, login/registro y pedidos, consumiendo la API REST con JWT tal cual está. React + Vite + TypeScript + Tailwind, con tests end-to-end en Playwright desde el primer commit.
 
+Para desplegarlo gratis en Netlify/Vercel con auto-deploy desde GitHub (junto con el backend y la base de datos), ver la guía [DEPLOY.md del backend](https://github.com/domgarlor/tienda-online/blob/master/DEPLOY.md).
+
 ## Requisitos
 
 - Node.js 20+

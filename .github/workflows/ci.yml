@@ -1,0 +1,29 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      - name: Comprobar tipos y build de producción
+        run: npm run build
+
+      # Los tests E2E (Playwright) necesitan el backend + BBDD arrancados,
+      # así que no corren aquí; se ejecutan en local con `npm run test:e2e`
+      # antes de cada despliegue relevante. Ver README.md.
