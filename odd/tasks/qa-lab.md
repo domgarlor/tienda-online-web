@@ -11,7 +11,7 @@ Branch: feature/qa-lab (from pre) | Delivery: ask-on-risk | Runner: Playwright (
 
 ## Tasks
 - T1 (S1,S2,S4) Frontend: native sort dropdown, custom ARIA listbox filter, debounced async search + skeletons, toast, with Playwright tests (infinite scroll moved to T3; no categories: backend has none) | inline | done, 16/16 Playwright passing locally
-- T2 (S1,S2,S4) Shadow DOM reviews widget + iframe support chat + tests | inline | pending
+- T2 (S1,S2,S4) Shadow DOM reviews widget + iframe support chat + tests | inline | done, 24/24 Playwright passing locally
 - T3 (S1,S2,S4) Drag & drop wishlist, modal, avatar upload, new tab + tests | inline | pending
 - T4 (S3,S4) Stripe Elements + PaymentIntent (backend repo) + tests | inline | pending
 - T5 (S4,S6) Selenium Java project reproducing the suite | inline | pending

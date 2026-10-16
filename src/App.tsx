@@ -1,4 +1,5 @@
 import { Route, Routes } from 'react-router-dom';
+import { ChatSoporte } from './components/ChatSoporte';
 import { Navbar } from './components/Navbar';
 import { RutaProtegida } from './components/RutaProtegida';
 import { Catalogo } from './pages/Catalogo';
@@ -25,6 +26,7 @@ export function App() {
           }
         />
       </Routes>
+      <ChatSoporte />
     </div>
   );
 }

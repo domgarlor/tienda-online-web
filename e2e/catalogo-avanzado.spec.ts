@@ -66,7 +66,7 @@ test('búsqueda sin coincidencias muestra el mensaje de sin resultados', async (
 
   await expect(page.getByTestId('sin-resultados')).toBeVisible();
   await expect(page.getByTestId('producto-card')).toHaveCount(0);
-  await expect(page.getByRole('status')).toHaveText('0 productos');
+  await expect(page.getByTestId('estado-busqueda')).toHaveText('0 productos');
 });
 
 test('toast: aparece al añadir al carrito y desaparece solo', async ({ page }) => {

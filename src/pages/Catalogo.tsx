@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { api, type Producto } from '../lib/api';
 import { useCart } from '../context/CartContext';
+import '../components/tienda-resenas';
 import { DisponibilidadSelect, type Disponibilidad } from '../components/DisponibilidadSelect';
 
 type Orden = 'defecto' | 'precio-asc' | 'precio-desc' | 'nombre';
@@ -138,6 +139,10 @@ export function Catalogo() {
           ))}
         </div>
       )}
+
+      <div className="mt-8">
+        <tienda-resenas />
+      </div>
 
       {toast && (
         <div
