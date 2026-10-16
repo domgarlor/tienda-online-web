@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { api, ApiError } from '../lib/api';
+import { PagoTarjeta } from '../components/PagoTarjeta';
 
 export function Carrito() {
   const { items, quitar, vaciar, total } = useCart();
@@ -10,16 +11,48 @@ export function Carrito() {
   const navigate = useNavigate();
   const [error, setError] = useState<string | null>(null);
   const [enviando, setEnviando] = useState(false);
+  const [claveStripe, setClaveStripe] = useState<string | null>(null);
+  const [pago, setPago] = useState<{ clientSecret: string } | null>(null);
+  const token = sesion?.token;
+
+  // Si el backend tiene Stripe configurado, se paga con tarjeta; si no, flujo clásico.
+  useEffect(() => {
+    if (!token) return;
+    api
+      .configPagos(token)
+      .then((c) => setClaveStripe(c.habilitado ? (c.publishableKey ?? null) : null))
+      .catch(() => setClaveStripe(null));
+  }, [token]);
+
+  const lineas = items.map((i) => ({ productoId: i.producto.id, cantidad: i.cantidad }));
+
+  async function iniciarPago() {
+    if (!sesion) return;
+    setError(null);
+    setEnviando(true);
+    try {
+      const intent = await api.iniciarPago(lineas, sesion.token);
+      setPago({ clientSecret: intent.clientSecret });
+    } catch (err) {
+      setError(err instanceof ApiError ? err.message : 'No se pudo iniciar el pago');
+    } finally {
+      setEnviando(false);
+    }
+  }
+
+  async function pedidoPagado(paymentIntentId: string) {
+    if (!sesion) return;
+    await api.crearPedido(lineas, sesion.token, paymentIntentId);
+    vaciar();
+    navigate('/mis-pedidos');
+  }
 
   async function finalizarPedido() {
     if (!sesion) return;
     setError(null);
     setEnviando(true);
     try {
-      await api.crearPedido(
-        items.map((i) => ({ productoId: i.producto.id, cantidad: i.cantidad })),
-        sesion.token
-      );
+      await api.crearPedido(lineas, sesion.token);
       vaciar();
       navigate('/mis-pedidos');
     } catch (err) {
@@ -69,7 +102,25 @@ export function Carrito() {
         </p>
       )}
 
-      {sesion ? (
+      {sesion && claveStripe ? (
+        pago ? (
+          <PagoTarjeta
+            publishableKey={claveStripe}
+            clientSecret={pago.clientSecret}
+            total={total}
+            onPagado={pedidoPagado}
+          />
+        ) : (
+          <button
+            onClick={iniciarPago}
+            disabled={enviando}
+            className="bg-emerald-600 text-white rounded py-2 px-4 hover:bg-emerald-700 disabled:opacity-50"
+            data-testid="pagar-con-tarjeta"
+          >
+            {enviando ? 'Preparando pago...' : 'Pagar con tarjeta'}
+          </button>
+        )
+      ) : sesion ? (
         <button
           onClick={finalizarPedido}
           disabled={enviando}
