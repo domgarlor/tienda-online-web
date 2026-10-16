@@ -11,7 +11,8 @@ export function Carrito() {
   const navigate = useNavigate();
   const [error, setError] = useState<string | null>(null);
   const [enviando, setEnviando] = useState(false);
-  const [claveStripe, setClaveStripe] = useState<string | null>(null);
+  // undefined = aún consultando la configuración de pagos; null = sin Stripe.
+  const [claveStripe, setClaveStripe] = useState<string | null | undefined>(undefined);
   const [pago, setPago] = useState<{ clientSecret: string } | null>(null);
   const token = sesion?.token;
 
@@ -102,7 +103,9 @@ export function Carrito() {
         </p>
       )}
 
-      {sesion && claveStripe ? (
+      {sesion && claveStripe === undefined ? (
+        <p className="text-gray-500" data-testid="cargando-pago">Preparando el pago…</p>
+      ) : sesion && claveStripe ? (
         pago ? (
           <PagoTarjeta
             publishableKey={claveStripe}

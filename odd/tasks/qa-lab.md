@@ -13,7 +13,7 @@ Branch: feature/qa-lab (from pre) | Delivery: ask-on-risk | Runner: Playwright (
 - T1 (S1,S2,S4) Frontend: native sort dropdown, custom ARIA listbox filter, debounced async search + skeletons, toast, with Playwright tests (infinite scroll moved to T3; no categories: backend has none) | inline | done, 16/16 Playwright passing locally
 - T2 (S1,S2,S4) Shadow DOM reviews widget + iframe support chat + tests | inline | done, 24/24 Playwright passing locally
 - T3 (S1,S2,S4) Drag & drop wishlist, modal, avatar upload, new tab + tests | inline | done, 33/33 Playwright passing locally (infinite scroll lives in /novedades)
-- T4 (S3,S4) Stripe Elements + PaymentIntent (backend repo) + tests | inline | backend done (14 JUnit tests, commit 7d26f55 in tienda-online/feature/stripe-pagos); frontend wired, flag-off path 33/33 green; Stripe Elements E2E PENDING (needs user test keys)
+- T4 (S3,S4) Stripe Elements + PaymentIntent (backend repo) + tests | inline | backend done (14 JUnit tests, commit 7d26f55 in tienda-online/feature/stripe-pagos); frontend wired, flag-off path 33/33 green; Stripe Elements E2E done: 5 Playwright payment tests (4242, declined, incomplete, 3DS complete, 3DS fail); suite 37 passed + 1 skipped with Stripe on, 33 passed + 5 skipped with Stripe off. Independent verifier PENDING (Risk items 1,2,5)
 - T5 (S4,S6) Selenium Java project reproducing the suite | inline | pending
 - T6 (S5) Security tests plan and execution | inline | pending
 
