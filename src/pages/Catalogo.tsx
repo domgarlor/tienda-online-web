@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { api, type Producto } from '../lib/api';
 import { useCart } from '../context/CartContext';
+import { favoritosStore, useFavoritos } from '../lib/favoritos';
 import '../components/tienda-resenas';
 import { DisponibilidadSelect, type Disponibilidad } from '../components/DisponibilidadSelect';
 
@@ -22,6 +23,7 @@ export function Catalogo() {
   const [toast, setToast] = useState<string | null>(null);
   const toastTimer = useRef<number | undefined>(undefined);
   const { añadir } = useCart();
+  const favoritos = useFavoritos();
 
   useEffect(() => {
     api
@@ -128,6 +130,16 @@ export function Catalogo() {
               <h2 className="font-medium">{producto.nombre}</h2>
               <p className="text-emerald-700 font-semibold">{producto.precio.toFixed(2)} €</p>
               <p className="text-sm text-gray-500">Stock: {producto.stock}</p>
+              <button
+                type="button"
+                onClick={() => favoritosStore.alternar(producto)}
+                aria-pressed={favoritos.some((f) => f.id === producto.id)}
+                aria-label={`Marcar ${producto.nombre} como favorito`}
+                className="text-sm text-left text-rose-600"
+                data-testid="favorito"
+              >
+                {favoritos.some((f) => f.id === producto.id) ? '♥ En favoritos' : '♡ Favorito'}
+              </button>
               <button
                 onClick={() => anadirConAviso(producto)}
                 className="mt-auto bg-emerald-600 text-white rounded py-1.5 hover:bg-emerald-700"

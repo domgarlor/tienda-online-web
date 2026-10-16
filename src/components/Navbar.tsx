@@ -1,10 +1,12 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
+import { useFavoritos } from '../lib/favoritos';
 
 export function Navbar() {
   const { sesion, logout } = useAuth();
   const { items } = useCart();
+  const favoritos = useFavoritos();
   const navigate = useNavigate();
 
   function handleLogout() {
@@ -20,7 +22,15 @@ export function Navbar() {
         🛒 TiendaOnline
       </Link>
 
+      <Link to="/novedades" className="hover:underline" data-testid="nav-novedades">
+        Novedades
+      </Link>
+
       <div className="flex-1" />
+
+      <Link to="/lista-deseos" className="hover:underline" data-testid="nav-favoritos">
+        Favoritos {favoritos.length > 0 && `(${favoritos.length})`}
+      </Link>
 
       <Link to="/carrito" className="hover:underline" data-testid="nav-carrito">
         Carrito {unidadesEnCarrito > 0 && `(${unidadesEnCarrito})`}
@@ -28,6 +38,9 @@ export function Navbar() {
 
       {sesion ? (
         <>
+          <Link to="/perfil" className="hover:underline" data-testid="nav-perfil">
+            Mi perfil
+          </Link>
           <Link to="/mis-pedidos" className="hover:underline" data-testid="nav-mis-pedidos">
             Mis pedidos
           </Link>
