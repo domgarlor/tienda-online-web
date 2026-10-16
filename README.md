@@ -4,6 +4,8 @@ Frontend web de [tienda-online](https://github.com/domgarlor/tienda-online): cat
 
 Para desplegarlo gratis en Netlify/Vercel con auto-deploy desde GitHub (junto con el backend y la base de datos), ver la guía [DEPLOY.md del backend](https://github.com/domgarlor/tienda-online/blob/master/DEPLOY.md).
 
+Este proyecto también es un banco de pruebas de automatización (Playwright y, próximamente, Selenium en Java): ver **[docs/QA-LAB.md](docs/QA-LAB.md)** para el inventario de elementos, el pago con Stripe en modo test y las lecciones aprendidas.
+
 ## Requisitos
 
 - Node.js 20+
