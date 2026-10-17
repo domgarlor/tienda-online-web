@@ -20,7 +20,11 @@ test('un cliente logueado puede añadir al carrito y completar un pedido', async
   await expect(page).toHaveURL('/carrito');
   await expect(page.getByTestId('carrito-items')).toContainText('Ratón inalámbrico');
 
-  await page.getByTestId('finalizar-pedido').click();
+  // Con Stripe activado en el backend no existe el botón clásico: ese flujo lo cubre pago-stripe.spec.ts.
+  const clasico = page.getByTestId('finalizar-pedido');
+  await expect(clasico.or(page.getByTestId('pagar-con-tarjeta'))).toBeVisible();
+  test.skip((await clasico.count()) === 0, 'Stripe activo: el pago con tarjeta se prueba en pago-stripe.spec.ts');
+  await clasico.click();
 
   await expect(page).toHaveURL('/mis-pedidos');
   const primerPedido = page.getByTestId('pedido-card').first();

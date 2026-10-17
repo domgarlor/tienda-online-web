@@ -88,8 +88,18 @@ export const api = {
 
   listarProductos: () => request<Producto[]>('/api/productos'),
 
-  crearPedido: (lineas: { productoId: number; cantidad: number }[], token: string) =>
-    request<Pedido>('/api/pedidos', { method: 'POST', body: JSON.stringify({ lineas }) }, token),
+  crearPedido: (lineas: { productoId: number; cantidad: number }[], token: string, paymentIntentId?: string) =>
+    request<Pedido>('/api/pedidos', { method: 'POST', body: JSON.stringify({ lineas, paymentIntentId }) }, token),
+
+  configPagos: (token: string) =>
+    request<{ habilitado: boolean; publishableKey?: string }>('/api/pagos/config', {}, token),
+
+  iniciarPago: (lineas: { productoId: number; cantidad: number }[], token: string) =>
+    request<{ paymentIntentId: string; clientSecret: string }>(
+      '/api/pagos/intent',
+      { method: 'POST', body: JSON.stringify({ lineas }) },
+      token,
+    ),
 
   misPedidos: (token: string) => request<Pedido[]>('/api/pedidos/mios', {}, token),
 };
